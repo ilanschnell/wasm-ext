@@ -14,7 +14,6 @@ module = Module(store.engine, """
                 local.set 0
                 br 1
             )
-            br 0
         )
         local.get 0
     )
