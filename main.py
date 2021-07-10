@@ -2,7 +2,7 @@ import ast, dis
 
 import wasmtime.loader
 
-from wasm_encoder import Module as DB_Module, i32
+from wasm_encoder import Module, i32
 
 
 def disp_code(code):
@@ -19,35 +19,33 @@ with open(fn) as fi:
 
 #print(ast.dump(module_ast, indent=4, include_attributes=True))
 code = compile(module_ast, fn, 'exec')
+#dis.dis(code)
 
-disp_code(code)
-disp_code(code.co_consts[0])
+#disp_code(code)
+functions = [c for c in code.co_consts if repr(c).startswith('<code object')]
 
-dis.dis(code)
-codes = [code, code.co_consts[0]]
+wmod = Module()
 
-mod = DB_Module()
-
-for code in codes:
-    print(code)
-    print(code.co_names)
-    for op in dis.get_instructions(code):
+for f in functions:
+    disp_code(f)
+    #wfun =
+    for op in dis.get_instructions(f):
         if op.arg is None:
             s = ''
         if op.opname == 'LOAD_CONST':
-            s = '%d (%r)' % (op.arg, code.co_consts[op.arg])
+            s = '%d (%r)' % (op.arg, f.co_consts[op.arg])
         elif op.opname == 'LOAD_FAST':
-            s = '%d (%r)' % (op.arg, code.co_varnames[op.arg])
+            s = '%d (%r)' % (op.arg, f.co_varnames[op.arg])
         else:
             s = ''
         print('    %-15s  %s' % (op.opname, s))
 
-foo = mod.add_function('foo', [i32], [i32])
+foo = wmod.add_function('foo', [i32], [i32])
 foo.local.get(0)
 foo.local.get(0)
 foo.i32.add()
 foo.block_end()
-mod.write_wasm('u')
+wmod.write_wasm('u')
 
 import u
 print(u.foo(7))
