@@ -1,8 +1,6 @@
 import ast, dis
 from pprint import pprint
 
-import wasmtime.loader
-
 from wasm_encoder import Module, i32
 
 
@@ -29,14 +27,16 @@ wmod = Module()
 
 for f in functions:
     disp_code(f)
-    pprint(f.co_varnames)
-    wfun = wmod.add_function(f.co_name, [i32], [i32])
+    wfun = wmod.add_function(f.co_name, f.co_argcount * [i32], [i32])
     for op in dis.get_instructions(f):
         if op.opname == 'LOAD_CONST':
             wfun.i32.const(f.co_consts[op.arg])
 
         elif op.opname == 'LOAD_FAST':
             wfun.local.get(op.arg)
+
+        elif op.opname == 'STORE_FAST':
+            wfun.local.set(op.arg)
 
         elif op.opname == 'BINARY_ADD':
             wfun.i32.add()
@@ -47,8 +47,16 @@ for f in functions:
         print('    %-15s  %s' % (op.opname, op.arg))
     wfun.block_end()
 
+
 wmod.write_wasm('u')
 
-import u
-print(u.foo(7))
-print(u.bar(5))
+from wasmtime import Store, Module, Instance
+store = Store()
+module = Module.from_file(store.engine, 'u.wasm')
+instance = Instance(store, module, [])
+foo = instance.exports(store)["foo"]
+bar = instance.exports(store)["bar"]
+add = instance.exports(store)["add"]
+print(foo(store))
+print(bar(store, 5))
+print(add(store, 2, 9))
