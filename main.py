@@ -8,6 +8,10 @@ def disp_code(code):
         if name.startswith('co_'):
             print('%-20s  %s' % (name, code.__getattribute__(name)))
 
+trans = {
+    'BINARY_ADD': 'i32.add',
+    'BINARY_MULTIPLY': 'i32.mul',
+}
 
 fn = 't.py'
 
@@ -32,7 +36,10 @@ for f in functions:
     if f.co_name == 'foo':
         wmod.append('(local i32)')
     for op in dis.get_instructions(f):
-        if op.opname == 'LOAD_CONST':
+        if op.opname in trans:
+            wmod.append(trans[op.opname])
+
+        elif op.opname == 'LOAD_CONST':
             wmod.append('i32.const %d' % f.co_consts[op.arg])
 
         elif op.opname == 'LOAD_FAST':
@@ -40,12 +47,6 @@ for f in functions:
 
         elif op.opname == 'STORE_FAST':
             wmod.append('local.set %d' % op.arg)
-
-        elif op.opname == 'BINARY_ADD':
-            wmod.append('i32.add')
-
-        elif op.opname == 'BINARY_MULTIPLY':
-            wmod.append('i32.mul')
 
         print('    %-15s  %s' % (op.opname, op.arg))
     wmod.append(')')
