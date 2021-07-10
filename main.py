@@ -1,4 +1,5 @@
 import ast, dis
+from pprint import pprint
 
 import wasmtime.loader
 
@@ -28,24 +29,26 @@ wmod = Module()
 
 for f in functions:
     disp_code(f)
-    #wfun =
+    pprint(f.co_varnames)
+    wfun = wmod.add_function(f.co_name, [i32], [i32])
     for op in dis.get_instructions(f):
-        if op.arg is None:
-            s = ''
         if op.opname == 'LOAD_CONST':
-            s = '%d (%r)' % (op.arg, f.co_consts[op.arg])
-        elif op.opname == 'LOAD_FAST':
-            s = '%d (%r)' % (op.arg, f.co_varnames[op.arg])
-        else:
-            s = ''
-        print('    %-15s  %s' % (op.opname, s))
+            wfun.i32.const(f.co_consts[op.arg])
 
-foo = wmod.add_function('foo', [i32], [i32])
-foo.local.get(0)
-foo.local.get(0)
-foo.i32.add()
-foo.block_end()
+        elif op.opname == 'LOAD_FAST':
+            wfun.local.get(op.arg)
+
+        elif op.opname == 'BINARY_ADD':
+            wfun.i32.add()
+
+        elif op.opname == 'BINARY_MULTIPLY':
+            wfun.i32.mul()
+
+        print('    %-15s  %s' % (op.opname, op.arg))
+    wfun.block_end()
+
 wmod.write_wasm('u')
 
 import u
 print(u.foo(7))
+print(u.bar(5))
