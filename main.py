@@ -8,9 +8,18 @@ def disp_code(code):
         if name.startswith('co_'):
             print('%-20s  %s' % (name, code.__getattribute__(name)))
 
-trans = {
+trans_op = {
     'BINARY_ADD': 'i32.add',
     'BINARY_MULTIPLY': 'i32.mul',
+}
+
+trans_cmp = {
+    '<': 'i32.lt_u',
+    '<=': 'i32.le_u',
+    '==': 'i32.eq',
+    '!=': 'i32.ne',
+    '>': 'i32.gt_u',
+    '>=': 'i32.ge_u',
 }
 
 fn = 't.py'
@@ -36,8 +45,8 @@ for f in functions:
     if f.co_nlocals:
         wmod.append('(local %s)' % ' '.join(f.co_nlocals * ['i32']))
     for op in dis.get_instructions(f):
-        if op.opname in trans:
-            wmod.append(trans[op.opname])
+        if op.opname in trans_op:
+            wmod.append(trans_op[op.opname])
 
         elif op.opname == 'LOAD_CONST':
             wmod.append('i32.const %d' % f.co_consts[op.arg])
@@ -47,6 +56,13 @@ for f in functions:
 
         elif op.opname == 'STORE_FAST':
             wmod.append('local.set %d' % op.arg)
+
+        elif op.opname == 'COMPARE_OP':
+            cmp_op = dis.cmp_op[op.arg]
+            wmod.append(trans_cmp[cmp_op])
+
+        elif op.opname == 'POP_JUMP_IF_FALSE':
+            wmod.append('br_if 0')
 
         print('    %-15s  %s' % (op.opname, op.arg))
     wmod.append(')')
@@ -66,6 +82,8 @@ instance = Instance(store, module, [])
 foo = instance.exports(store)["foo"]
 bar = instance.exports(store)["bar"]
 add = instance.exports(store)["add"]
+#mx_ = instance.exports(store)["max"]
 print(foo(store))
 print(bar(store, 5))
 print(add(store, 2, 9))
+#print(mx_(store, 2, 9))

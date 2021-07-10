@@ -9,6 +9,10 @@ def bar(n):
 def add(a, b):
     return a + b
 
-#print(foo())
-#print(bar(5))
-#print(add(2, 9))
+#def max(a, b):
+#    return a if a > b else b
+
+print(foo())
+print(bar(5))
+print(add(3, 4))
+#print(max(2, 9))
