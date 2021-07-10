@@ -1,6 +1,6 @@
 import ast, dis
 
-from wasmtime import Store, Module, Instance
+import wasmtime.loader
 
 from wasm_encoder import Module as DB_Module, i32
 
@@ -47,11 +47,7 @@ foo.local.get(0)
 foo.local.get(0)
 foo.i32.add()
 foo.block_end()
-mod.write_wasm('t')
+mod.write_wasm('u')
 
-store = Store()
-module = Module.from_file(store.engine, 't.wasm')
-instance = Instance(store, module, [])
-myfoo = instance.exports(store)["foo"]
-print(myfoo(store, 7))
-
+import u
+print(u.foo(7))
