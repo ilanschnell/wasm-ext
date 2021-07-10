@@ -33,8 +33,8 @@ for f in functions:
     if f.co_argcount:
         wmod.append('(param %s)' % ' '.join(f.co_argcount * ['i32']))
     wmod.append('(result i32)')
-    if f.co_name == 'foo':
-        wmod.append('(local i32)')
+    if f.co_nlocals:
+        wmod.append('(local %s)' % ' '.join(f.co_nlocals * ['i32']))
     for op in dis.get_instructions(f):
         if op.opname in trans:
             wmod.append(trans[op.opname])

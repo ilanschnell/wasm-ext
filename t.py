@@ -1,6 +1,7 @@
 def foo():
-    answer = 42
-    return answer
+    a = 42
+    b = 7
+    return a + b
 
 def bar(n):
     return (1 + n) * n
