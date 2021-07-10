@@ -13,8 +13,14 @@ trans_op = {
     'BINARY_MULTIPLY': 'i32.mul',
 }
 
-i32_cmp = 'i32.lt_s', 'i32.le_s', 'i32.eq', 'i32.ne', 'i32.gt_s', 'i32.ge_s'
-
+trans_cmp = {
+    '<': 'lt_s',
+    '<=': 'le_s',
+    '==': 'eq',
+    '!=': 'ne',
+    '>': 'gt_s',
+    '>=': 'ge_s',
+}
 
 fn = 't.py'
 
@@ -52,7 +58,8 @@ for f in functions:
             wmod.append('local.set %d' % op.arg)
 
         elif op.opname == 'COMPARE_OP':
-            wmod.append(i32_cmp[op.arg])
+            cmp_op = dis.cmp_op[op.arg]
+            wmod.append('i32.' + trans_cmp[cmp_op])
 
         elif op.opname == 'POP_JUMP_IF_FALSE':
             wmod.append('br_if 0')
