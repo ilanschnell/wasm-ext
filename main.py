@@ -1,8 +1,6 @@
 import ast, dis
 from pprint import pprint
 
-from wasm_encoder import Module, i32
-
 
 def disp_code(code):
     print('----- %s -----' % code.co_name)
@@ -23,36 +21,46 @@ code = compile(module_ast, fn, 'exec')
 #disp_code(code)
 functions = [c for c in code.co_consts if repr(c).startswith('<code object')]
 
-wmod = Module()
+wmod = ['(module']
 
 for f in functions:
     disp_code(f)
-    wfun = wmod.add_function(f.co_name, f.co_argcount * [i32], [i32])
+    wmod.append('(func $%s' % f.co_name)
+    if f.co_argcount:
+        wmod.append('(param %s)' % ' '.join(f.co_argcount * ['i32']))
+    wmod.append('(result i32)')
+    if f.co_name == 'foo':
+        wmod.append('(local i32)')
     for op in dis.get_instructions(f):
         if op.opname == 'LOAD_CONST':
-            wfun.i32.const(f.co_consts[op.arg])
+            wmod.append('i32.const %d' % f.co_consts[op.arg])
 
         elif op.opname == 'LOAD_FAST':
-            wfun.local.get(op.arg)
+            wmod.append('local.get %d' % op.arg)
 
         elif op.opname == 'STORE_FAST':
-            wfun.local.set(op.arg)
+            wmod.append('local.set %d' % op.arg)
 
         elif op.opname == 'BINARY_ADD':
-            wfun.i32.add()
+            wmod.append('i32.add')
 
         elif op.opname == 'BINARY_MULTIPLY':
-            wfun.i32.mul()
+            wmod.append('i32.mul')
 
         print('    %-15s  %s' % (op.opname, op.arg))
-    wfun.block_end()
+    wmod.append(')')
 
+for f in functions:
+    wmod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
 
-wmod.write_wasm('u')
+wmod.append(')')
+
+with open('u.wat', 'w') as fo:
+    fo.write('\n'.join(wmod))
 
 from wasmtime import Store, Module, Instance
 store = Store()
-module = Module.from_file(store.engine, 'u.wasm')
+module = Module.from_file(store.engine, 'u.wat')
 instance = Instance(store, module, [])
 foo = instance.exports(store)["foo"]
 bar = instance.exports(store)["bar"]
