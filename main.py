@@ -38,7 +38,7 @@ wmod = ['(module']
 
 for f in functions:
     disp_code(f)
-    labels = dis.findlabels(f.co_code)
+    #labels = dis.findlabels(f.co_code)
     wmod.append('(func $%s' % f.co_name)
     if f.co_argcount:
         wmod.append('(param %s)' % ' '.join(f.co_argcount * ['i32']))
@@ -66,8 +66,11 @@ for f in functions:
         elif opname == 'POP_JUMP_IF_FALSE':
             wmod.append('br_if 0')
 
-        print('   %s %-25s  %s' % ('>>' if op.offset in labels else '  ',
-                                   opname, op.arg))
+        print('%s %3d %-25s  %s %s' % (
+            '>>' if op.is_jump_target else '  ',
+            op.offset, opname,
+            '' if op.arg is None else '%4d' % op.arg,
+            '' if op.argval is None else '(%s)' % op.argval))
     wmod.append(')')
 
 for f in functions:
