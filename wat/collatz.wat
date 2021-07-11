@@ -12,9 +12,9 @@
 
                local.get $n
                i64.const 2
-               i64.rem_u      ;; n % 2
+               i64.rem_u              ;; n % 2
                i32.wrap_i64
-               (if            ;; if n % 2: goto D
+               (if                    ;; if n % 2: goto D
                    (then
                        i64.const 3
                        local.get $n
