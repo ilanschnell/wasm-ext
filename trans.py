@@ -1,4 +1,5 @@
-import dis, inspect
+import dis
+import inspect
 
 
 t_op = {
@@ -23,11 +24,11 @@ def t_function(f, w_mod, debug=False):
 
     w_mod.append('(func $%s' % f.co_name)
     if f.co_argcount:
-        w_mod.append('(param %s)' % ' '.join(f.co_argcount * ['i32']))
+        w_mod.append('(param %s)' % ' '.join(f.co_argcount * ['i64']))
 
-    w_mod.append('(result i32)')
+    w_mod.append('(result i64)')
     if f.co_nlocals:
-        w_mod.append('(local %s)' % ' '.join(f.co_nlocals * ['i32']))
+        w_mod.append('(local %s)' % ' '.join(f.co_nlocals * ['i64']))
 
     for op in dis.get_instructions(f):
         opname = op.opname
@@ -39,10 +40,10 @@ def t_function(f, w_mod, debug=False):
                 w_mod.append('))')
 
         if opname in t_op:
-            w_mod.append('i32.%s' % t_op[opname])
+            w_mod.append('i64.%s' % t_op[opname])
 
         elif opname == 'LOAD_CONST':
-            w_mod.append('i32.const %d' % f.co_consts[op.arg])
+            w_mod.append('i64.const %d' % f.co_consts[op.arg])
 
         elif opname == 'LOAD_FAST':
             w_mod.append('local.get %d' % op.arg)
@@ -52,10 +53,10 @@ def t_function(f, w_mod, debug=False):
 
         elif opname == 'COMPARE_OP':
             cmp_op = dis.cmp_op[op.arg]
-            w_mod.append('i32.' + t_cmp[cmp_op])
+            w_mod.append('i64.' + t_cmp[cmp_op])
 
         elif opname == 'POP_JUMP_IF_FALSE':
-            w_mod.append('i32.eqz  br_if 1')
+            w_mod.append('i64.eqz  br_if 1')
 
         elif opname == 'JUMP_ABSOLUTE':
             w_mod.append('br 0')

@@ -1,5 +1,5 @@
-import ast, inspect
-from pprint import pprint
+import ast
+import inspect
 
 import trans
 
@@ -24,8 +24,8 @@ functions = [c for c in code.co_consts if inspect.iscode(c)]
 wmod = ['(module']
 
 for f in functions:
-    disp_code(f)
-    trans.t_function(f, wmod, debug=True)
+    #disp_code(f)
+    trans.t_function(f, wmod, debug=0)
 
 for f in functions:
     wmod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
