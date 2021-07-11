@@ -1,7 +1,7 @@
 from time import time
 from wasmtime import Store, Module, Instance
 
-N = 100_000_000
+N = 1000_000_000
 
 store = Store()
 module = Module(store.engine, """
@@ -41,8 +41,8 @@ for n in range(5):
 
 t0 = time()
 print(f(store, N))
-print("%9.6f" % (time() - t0, ))
+print("%9.3fs" % (time() - t0, ))
 
 t0 = time()
 print(sum(range(N + 1)))
-print("%9.6f" % (time() - t0, ))
+print("%9.3fs" % (time() - t0, ))
