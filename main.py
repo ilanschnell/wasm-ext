@@ -1,4 +1,4 @@
-import ast, dis
+import ast, dis, inspect
 from pprint import pprint
 
 
@@ -32,7 +32,7 @@ code = compile(module_ast, fn, 'exec')
 #dis.dis(code)
 
 #disp_code(code)
-functions = [c for c in code.co_consts if repr(c).startswith('<code object')]
+functions = [c for c in code.co_consts if inspect.iscode(c)]
 
 wmod = ['(module']
 
