@@ -3,12 +3,16 @@ from wasmtime import Store, Module, Instance
 
 N = 1000_000_000
 
+
 def sum7(n):
-    res = 0
-    while n:
-        res += n // 7
-        n -= 1
-    return res
+    return sum(i // 7 for i in range(n + 1))
+
+#def sum7(n):
+#    res = 0
+#    while n:
+#        res += n // 7
+#        n -= 1
+#    return res
 
 store = Store()
 module = Module(store.engine, """

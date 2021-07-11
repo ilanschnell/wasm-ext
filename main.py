@@ -45,26 +45,27 @@ for f in functions:
     if f.co_nlocals:
         wmod.append('(local %s)' % ' '.join(f.co_nlocals * ['i32']))
     for op in dis.get_instructions(f):
-        if op.opname in trans_op:
-            wmod.append(trans_op[op.opname])
+        opname = op.opname
+        if opname in trans_op:
+            wmod.append(trans_op[opname])
 
-        elif op.opname == 'LOAD_CONST':
+        elif opname == 'LOAD_CONST':
             wmod.append('i32.const %d' % f.co_consts[op.arg])
 
-        elif op.opname == 'LOAD_FAST':
+        elif opname == 'LOAD_FAST':
             wmod.append('local.get %d' % op.arg)
 
-        elif op.opname == 'STORE_FAST':
+        elif opname == 'STORE_FAST':
             wmod.append('local.set %d' % op.arg)
 
-        elif op.opname == 'COMPARE_OP':
+        elif opname == 'COMPARE_OP':
             cmp_op = dis.cmp_op[op.arg]
             wmod.append('i32.' + trans_cmp[cmp_op])
 
-        elif op.opname == 'POP_JUMP_IF_FALSE':
+        elif opname == 'POP_JUMP_IF_FALSE':
             wmod.append('br_if 0')
 
-        print('    %-15s  %s' % (op.opname, op.arg))
+        print('    %-15s  %s' % (opname, op.arg))
     wmod.append(')')
 
 for f in functions:
