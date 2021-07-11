@@ -13,7 +13,8 @@ def sum7(n):
 store = Store()
 module = Module(store.engine, """
 (module
-    (func $sum7 (param i64) (result i64) (local i64)
+    (func $sum7 (param i64) (result i64)
+       (local i64)
        i64.const 0
        local.set 1            ;; res = 0
        (block
@@ -43,7 +44,7 @@ module = Module(store.engine, """
 instance = Instance(store, module, [])
 
 f = instance.exports(store)["sum7"]
-for n in range(25):
+for n in range(100):
     assert f(store, n) == sum7(n)
 
 t0 = time()
