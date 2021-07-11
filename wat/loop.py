@@ -14,13 +14,13 @@ module = Module(store.engine, """
                local.get 0    ;; n
                i64.eqz
                br_if 1        ;; if n == 0: goto A
-               local.get 1
-               local.get 0
-               i64.add        ;; res + n
+               local.get 1    ;; res
+               local.get 0    ;; n
+               i64.add
                local.set 1    ;; res = res + n
-               local.get 0
+               local.get 0    ;; n
                i64.const 1
-               i64.sub        ;; n - 1
+               i64.sub
                local.set 0    ;; n = n - 1
                br 0           ;; goto B
            )
