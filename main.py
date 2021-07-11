@@ -11,6 +11,9 @@ def disp_code(code):
 trans_op = {
     'BINARY_ADD': 'i32.add',
     'BINARY_MULTIPLY': 'i32.mul',
+    'BINARY_FLOOR_DIVIDE': 'i32.div_s',
+    'INPLACE_ADD': 'i32.add',
+    'INPLACE_SUBTRACT': 'i32.sub',
 }
 
 trans_cmp = {
@@ -47,6 +50,13 @@ for f in functions:
         wmod.append('(local %s)' % ' '.join(f.co_nlocals * ['i32']))
     for op in dis.get_instructions(f):
         opname = op.opname
+
+        if op.is_jump_target:
+            if op.offset == 4:
+                wmod.append('(block (loop')
+            if op.offset == 30:
+                wmod.append('))')
+
         if opname in trans_op:
             wmod.append(trans_op[opname])
 
@@ -64,7 +74,16 @@ for f in functions:
             wmod.append('i32.' + trans_cmp[cmp_op])
 
         elif opname == 'POP_JUMP_IF_FALSE':
-            wmod.append('br_if 0')
+            wmod.append('i32.eqz  br_if 1')
+
+        elif opname == 'JUMP_ABSOLUTE':
+            wmod.append('br 0')
+
+        elif opname == 'RETURN_VALUE':
+            pass
+
+        else:
+            raise ValueError("unknwon opcode: %s" % opname)
 
         print('%s %3d %-25s  %s %s' % (
             '>>' if op.is_jump_target else '  ',
@@ -88,8 +107,8 @@ instance = Instance(store, module, [])
 foo = instance.exports(store)["foo"]
 bar = instance.exports(store)["bar"]
 add = instance.exports(store)["add"]
-#mx_ = instance.exports(store)["max"]
+sum7 = instance.exports(store)["sum7"]
 print(foo(store))
 print(bar(store, 5))
 print(add(store, 2, 9))
-#print(mx_(store, 2, 9))
+print(sum7(store, 1000))
