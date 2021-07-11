@@ -10,10 +10,10 @@ module = Module(store.engine, """
        i64.const 0
        local.set 1            ;; res = 0
        (block
-           local.get 0
-           i64.eqz
-           br_if 0            ;; if n == 0: goto A
            (loop              ;; label B
+               local.get 0    ;; n
+               i64.eqz
+               br_if 1        ;; if n == 0: goto A
                local.get 1
                local.get 0
                i64.add        ;; res + n
@@ -21,9 +21,7 @@ module = Module(store.engine, """
                local.get 0
                i64.const 1
                i64.sub        ;; n - 1
-               local.tee 0    ;; n = n - 1
-               i64.eqz
-               br_if 1        ;; if n == 0: goto A
+               local.set 0    ;; n = n - 1
                br 0           ;; goto B
            )
        )                      ;; label A
