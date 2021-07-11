@@ -1,10 +1,12 @@
 from wasmtime import Store, Module, Instance
 
+
 # max(a, b):
 #     if a > b:
 #         return a
 #     a = b
 #     return a
+
 store = Store()
 module = Module(store.engine, """
 (module
@@ -13,10 +15,10 @@ module = Module(store.engine, """
             local.get 0  ;; a
             local.get 1  ;; b
             i32.gt_u
-            br_if 0      ;; if a > b goto 0
+            br_if 0      ;; if a > b: goto A
             local.get 1  ;; b
             local.set 0  ;; a = b
-        )                ;; label 0
+        )                ;; label A
         local.get 0      ;; a
     )
     (export "max" (func $max))
