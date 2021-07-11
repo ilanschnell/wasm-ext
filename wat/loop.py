@@ -12,8 +12,8 @@ module = Module(store.engine, """
        (block
            local.get 0
            i64.eqz
-           br_if 0
-           (loop
+           br_if 0            ;; if n == 0: goto 0
+           (loop              ;; label 1
                local.get 1
                local.get 0
                i64.add
@@ -23,10 +23,10 @@ module = Module(store.engine, """
                i64.sub
                local.tee 0
                i64.eqz
-               br_if 1
-               br 0
+               br_if 1        ;; if n == 0: goto 1
+               br 0           ;; goto 0
            )
-       )
+       )                      ;; label 0
        local.get 1
     )
     (export "sum_n" (func $sum_n))

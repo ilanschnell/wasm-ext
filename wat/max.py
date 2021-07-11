@@ -9,12 +9,11 @@ module = Module(store.engine, """
                 local.get 0
                 local.get 1
                 i32.gt_u
-                br_if 0
+                br_if 0      ;; if TOS goto 0
                 local.get 1
                 local.set 0
-                br 1
-            )
-        )
+            )                ;; label 0
+        )                    ;; label 1
         local.get 0
     )
     (export "max" (func $max))
