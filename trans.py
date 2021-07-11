@@ -22,21 +22,26 @@ t_cmp = {
 def t_function(f, w_mod, debug=False):
     assert inspect.iscode(f)
 
+    labels = dis.findlabels(f.co_code)
+
     w_mod.append('(func $%s' % f.co_name)
     if f.co_argcount:
         w_mod.append('(param %s)' % ' '.join(f.co_argcount * ['i64']))
 
     w_mod.append('(result i64)')
-    if f.co_nlocals:
-        w_mod.append('(local %s)' % ' '.join(f.co_nlocals * ['i64']))
+    nlocals = f.co_nlocals - f.co_argcount
+    assert nlocals >= 0
+    if nlocals:
+        w_mod.append('(local %s)' % ' '.join(nlocals * ['i64']))
 
     for op in dis.get_instructions(f):
         opname = op.opname
 
         if op.is_jump_target:
-            if op.offset == 4:
+            assert op.offset in labels
+            if op.offset == labels[1]:
                 w_mod.append('(block (loop')
-            if op.offset == 30:
+            if op.offset == labels[0]:
                 w_mod.append('))')
 
         if opname in t_op:
@@ -74,4 +79,4 @@ def t_function(f, w_mod, debug=False):
                 '' if op.arg is None else '%4d' % op.arg,
                 '' if op.argval is None else '(%s)' % op.argval))
 
-    w_mod.append(')')
+    w_mod.append(')')  # (func
