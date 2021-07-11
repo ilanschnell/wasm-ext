@@ -11,8 +11,7 @@ module = Module(store.engine, """
        local.set 1
        (block
            local.get 0
-           i64.const 1
-           i64.le_u
+           i64.eqz
            br_if 0
            (loop
                local.get 1
@@ -20,8 +19,8 @@ module = Module(store.engine, """
                i64.add
                local.set 1
                local.get 0
-               i64.const -1
-               i64.add
+               i64.const 1
+               i64.sub
                local.tee 0
                i64.eqz
                br_if 1
@@ -38,12 +37,12 @@ instance = Instance(store, module, [])
 
 f = instance.exports(store)["sum_n"]
 for n in range(5):
-    print(n, f(store, n), sum(range(n)))
+    print(n, f(store, n), sum(range(n + 1)))
 
 t0 = time()
 print(f(store, N))
 print("%9.6f" % (time() - t0, ))
 
 t0 = time()
-print(sum(range(N)))
+print(sum(range(N + 1)))
 print("%9.6f" % (time() - t0, ))
