@@ -5,15 +5,13 @@ module = Module(store.engine, """
 (module
     (func $max (param i32 i32) (result i32) (local i32)
         (block
-            (block
-                local.get 0
-                local.get 1
-                i32.gt_u
-                br_if 0      ;; if TOS goto 0
-                local.get 1
-                local.set 0
-            )                ;; label 0
-        )                    ;; label 1
+            local.get 0
+            local.get 1
+            i32.gt_u
+            br_if 0      ;; if TOS goto 0
+            local.get 1
+            local.set 0
+        )                ;; label 0
         local.get 0
     )
     (export "max" (func $max))

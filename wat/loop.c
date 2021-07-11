@@ -2,12 +2,12 @@
 #include <stdio.h>
 
 
-int64_t sum(uint64_t n)
+int64_t sum7(uint64_t n)
 {
     int64_t res = 0;
 
-    while (n > 0) {
-        res += n;
+    while (n) {
+        res += n / 7;
         n--;
     }
     return res;
@@ -15,13 +15,9 @@ int64_t sum(uint64_t n)
 
 int main()
 {
-    int64_t i;
+    int64_t i = 1000000000;
 
-    for (i = 0; i < 5; i++)
-        printf("%lld %lld\n", i, sum(i));
-
-    i = 1000000000;
-    printf("%lld\n", sum(i));
+    printf("%lld\n", sum7(i));
 
     return 0;
 }
