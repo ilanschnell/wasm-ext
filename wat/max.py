@@ -8,7 +8,7 @@ from wasmtime import Store, Module, Instance
 store = Store()
 module = Module(store.engine, """
 (module
-    (func $max (param i32 i32) (result i32) (local i32)
+    (func $max (param i32 i32) (result i32)
         (block
             local.get 0  ;; a
             local.get 1  ;; b
