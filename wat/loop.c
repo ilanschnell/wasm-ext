@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 
-int64_t sum7(uint64_t n)
+int64_t sum7(int64_t n)
 {
     int64_t res = 0;
 
