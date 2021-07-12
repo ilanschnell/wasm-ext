@@ -2,13 +2,19 @@ import dis
 import inspect
 
 
-t_op = {
-    'BINARY_ADD': 'add',
-    'BINARY_MULTIPLY': 'mul',
-    'BINARY_FLOOR_DIVIDE': 'div_s',
-    'INPLACE_ADD': 'add',
-    'INPLACE_SUBTRACT': 'sub',
-}
+t_op = {p + k: v for p in ('BINARY_', 'INPLACE_') for k, v in {
+    'ADD': 'add',
+    'SUBTRACT': 'sub',
+    'MULTIPLY': 'mul',
+    'FLOOR_DIVIDE': 'div_s',
+    'TRUE_DIVIDE': 'div_s',
+    'MODULO': 'rem_s',
+    'AND': 'and',
+    'OR': 'or',
+    'XOR': 'xor',
+    'LSHIFT': 'shl',
+    'RSHIFT': 'shr_s'
+}.items()}
 
 t_cmp = {
     '<': 'lt_s',

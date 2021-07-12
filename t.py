@@ -17,15 +17,13 @@ def add(a, b):
 #    return c
 
 def sum7(n):
-#    if n < 1:
-#        return 0
     res = 0
     while n:
         res += n // 7
         n -= 1
     return res
 
-
+"""
 print(foo())
 print(bar(5))
 print(add(3, 4))
@@ -34,3 +32,4 @@ print(sum7(1000))
 import dis
 print(dis.show_code(sum7))
 print(dis.dis(sum7))
+"""
