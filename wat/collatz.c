@@ -15,9 +15,10 @@ int64_t collatz(int64_t n)
 
 int main(void)
 {
+    int64_t N = 100 * 1000 * 1000;
     int64_t i, j, m = 0;
 
-    for (i = 1; i < 100000000; i++) {
+    for (i = 1; i < N; i++) {
         if ((j = collatz(i)) > m) {
             m = j;
             printf("%3lld: %9lld\n", m, i);
