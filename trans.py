@@ -19,8 +19,23 @@ t_cmp = {
     '>=': 'ge_s',
 }
 
+def disp_code(code):
+    print('----- %s -----' % code.co_name)
+    for name in dir(code):
+        if name.startswith('co_'):
+            print('%-20s  %s' % (name, code.__getattribute__(name)))
+
+def disp_op(op):
+    print('%s %3d %-25s  %s %s' % (
+        '>>' if op.is_jump_target else '  ',
+        op.offset, op.opname,
+        '' if op.arg is None else '%4d' % op.arg,
+        '' if op.argval is None else '(%s)' % op.argval))
+
 def t_function(f, w_mod, debug=False):
     assert inspect.iscode(f)
+    if debug:
+        disp_code(f)
 
     labels = dis.findlabels(f.co_code)
 
@@ -73,10 +88,6 @@ def t_function(f, w_mod, debug=False):
             raise ValueError("unknwon opcode: %s" % opname)
 
         if debug:
-            print('%s %3d %-25s  %s %s' % (
-                '>>' if op.is_jump_target else '  ',
-                op.offset, opname,
-                '' if op.arg is None else '%4d' % op.arg,
-                '' if op.argval is None else '(%s)' % op.argval))
+            disp_op(op)
 
     w_mod.append(')')  # (func
