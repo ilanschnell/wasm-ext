@@ -131,7 +131,7 @@ def t_module(source_text, filename='<module>', debug=False):
     module_ast = ast.parse(source_text)
     #print(ast.dump(module_ast, indent=4, include_attributes=True))
     co = compile(module_ast, filename, 'exec')
-    #dis.dis(code)
+    #dis.dis(co)
 
     functions = [c for c in co.co_consts if inspect.iscode(c)]
 
