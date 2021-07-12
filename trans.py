@@ -68,6 +68,12 @@ def t_function(f, w_mod, debug=False):
         if opname in t_op:
             w_mod.append('i64.%s' % t_op[opname])
 
+        elif opname == 'UNARY_POSITIVE':
+            pass
+
+        elif opname == 'UNARY_NEGATIVE':
+            raise NotImplementedError
+
         elif opname == 'LOAD_CONST':
             w_mod.append('i64.const %d' % f.co_consts[op.arg])
 

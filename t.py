@@ -23,13 +23,13 @@ def sum7(n):
         n -= 1
     return res
 
-"""
-print(foo())
-print(bar(5))
-print(add(3, 4))
-print(sum7(1000))
 
-import dis
-print(dis.show_code(sum7))
-print(dis.dis(sum7))
-"""
+if __name__ == '__main__':
+    print(foo())
+    print(bar(5))
+    print(add(3, 4))
+    print(sum7(1000))
+
+    import dis
+    print(dis.show_code(sum7))
+    print(dis.dis(sum7))
