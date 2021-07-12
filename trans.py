@@ -72,7 +72,7 @@ def t_function(f, w_mod, debug=False):
             pass
 
         elif opname == 'UNARY_NEGATIVE':
-            raise NotImplementedError
+            w_mod.extend(['call $unary_negative'])
 
         elif opname == 'LOAD_CONST':
             w_mod.append('i64.const %d' % f.co_consts[op.arg])
