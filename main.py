@@ -1,31 +1,19 @@
 import ast
 import inspect
 
-import trans
+from trans import t_module
 
 
 fn = 't.py'
 
 with open(fn) as fi:
-    module_ast = ast.parse(fi.read())
+    src = fi.read()
 
-#print(ast.dump(module_ast, indent=4, include_attributes=True))
-code = compile(module_ast, fn, 'exec')
-#dis.dis(code)
-
-functions = [c for c in code.co_consts if inspect.iscode(c)]
-
-w_mod = ["""(module
-(func $unary_negative (param i64) (result i64)
-i64.const 0 local.get 0 i64.sub)"""]
-for f in functions:
-    trans.t_function(f, w_mod, debug=0)
-for f in functions:
-    w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
-w_mod.append(') ;; module\n')
+wat = t_module(src, fn, debug=0)
 
 with open('u.wat', 'w') as fo:
-    fo.write('\n'.join(w_mod))
+    fo.write(wat)
+
 
 from wasmtime import Store, Module, Instance
 store = Store()

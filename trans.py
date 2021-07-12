@@ -1,6 +1,14 @@
+import ast
 import dis
 import inspect
 
+
+header = """(module
+  (func $unary_negative (param i64) (result i64)
+    i64.const 0
+    local.get 0
+    i64.sub)
+"""
 
 t_op = {p + k: v for p in ('BINARY_', 'INPLACE_') for k, v in {
     'ADD': 'add',
@@ -99,9 +107,26 @@ def t_function(f, w_mod, debug=False):
             w_mod.append('return')
 
         else:
-            raise ValueError("unknwon opcode: %s" % opname)
+            raise NotImplementedError(opname)
 
         if debug:
             disp_op(op)
 
     w_mod.append(')  ;; func %s' % f.co_name)
+
+
+def t_module(source_text, filename='<module>', debug=False):
+    module_ast = ast.parse(source_text)
+    #print(ast.dump(module_ast, indent=4, include_attributes=True))
+    co = compile(module_ast, filename, 'exec')
+    #dis.dis(code)
+
+    functions = [c for c in co.co_consts if inspect.iscode(c)]
+
+    w_mod = [header]
+    for f in functions:
+        t_function(f, w_mod, debug=debug)
+    for f in functions:
+        w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
+    w_mod.append(')\n')
+    return '\n'.join(w_mod)
