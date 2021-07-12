@@ -130,3 +130,13 @@ def t_module(source_text, filename='<module>', debug=False):
         w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
     w_mod.append(')\n')
     return '\n'.join(w_mod)
+
+
+def t_file(py_file, wat_file, debug=False):
+    with open(py_file) as fi:
+        src = fi.read()
+
+    dst = t_module(src, py_file, debug=debug)
+
+    with open(wat_file, 'w') as fo:
+        fo.write(dst)

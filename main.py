@@ -1,23 +1,14 @@
-import ast
-import inspect
-
-from trans import t_module
+from trans import t_file
 
 
-fn = 't.py'
+py_file = 't.py'
+wat_file = 'u.wat'
 
-with open(fn) as fi:
-    src = fi.read()
-
-wat = t_module(src, fn, debug=0)
-
-with open('u.wat', 'w') as fo:
-    fo.write(wat)
-
+t_file(py_file, wat_file, debug=0)
 
 from wasmtime import Store, Module, Instance
 store = Store()
-module = Module.from_file(store.engine, 'u.wat')
+module = Module.from_file(store.engine, wat_file)
 instance = Instance(store, module, [])
 foo = instance.exports(store)["foo"]
 bar = instance.exports(store)["bar"]
