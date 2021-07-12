@@ -17,6 +17,8 @@ def add(a, b):
 #    return c
 
 def sum7(n):
+#    if n < 1:
+#        return 0
     res = 0
     while n:
         res += n // 7

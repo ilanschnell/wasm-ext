@@ -66,10 +66,12 @@ def t_function(f, w_mod, debug=False):
             w_mod.append('i64.const %d' % f.co_consts[op.arg])
 
         elif opname == 'LOAD_FAST':
-            w_mod.append('local.get %d' % op.arg)
+            w_mod.append('local.get %d  ;; %s' %
+                         (op.arg, f.co_varnames[op.arg]))
 
         elif opname == 'STORE_FAST':
-            w_mod.append('local.set %d' % op.arg)
+            w_mod.append('local.set %d  ;; %s' %
+                         (op.arg, f.co_varnames[op.arg]))
 
         elif opname == 'COMPARE_OP':
             cmp_op = dis.cmp_op[op.arg]
@@ -82,7 +84,7 @@ def t_function(f, w_mod, debug=False):
             w_mod.append('br 0')
 
         elif opname == 'RETURN_VALUE':
-            pass
+            w_mod.append('return')
 
         else:
             raise ValueError("unknwon opcode: %s" % opname)
