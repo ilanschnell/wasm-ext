@@ -63,7 +63,7 @@ def t_function(f, w_mod, f_names, debug=False):
     if nlocals:
         w_mod.append('(local %s)' % ' '.join(nlocals * ['i64']))
 
-    f_name = None
+    f_stack = []
 
     for op in dis.get_instructions(f):
         opname = op.opname
@@ -102,13 +102,12 @@ def t_function(f, w_mod, f_names, debug=False):
         elif opname == 'LOAD_GLOBAL':
             name = f.co_names[op.arg]
             if name in f_names:
-                f_name = name
+                f_stack.append(name)
             else:
                 return NotImplementedError("%s (%s)" % (opname, name))
 
         elif opname == 'CALL_FUNCTION':
-            assert f_name is not None
-            w_mod.append('call $%s' % f_name)
+            w_mod.append('call $%s' % f_stack.pop())
 
         elif opname == 'POP_JUMP_IF_FALSE':
             w_mod.append('i64.eqz  br_if 1')

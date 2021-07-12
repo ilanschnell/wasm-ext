@@ -4,7 +4,7 @@ from trans import t_file
 py_file = 't.py'
 wat_file = 'u.wat'
 
-t_file(py_file, wat_file, debug=0)
+t_file(py_file, wat_file, debug=1)
 
 from wasmtime import Store, Module, Instance
 store = Store()

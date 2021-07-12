@@ -17,7 +17,7 @@ def add(a, b):
 #    return c
 
 def sum7(n):
-    res = bar(3)
+    res = add(foo(), bar(3))
     while n:
         res += n // 7
         n -= 1
