@@ -3,13 +3,6 @@ import dis
 import inspect
 
 
-header = """(module
-  (func $unary_negative (param i64) (result i64)
-    i64.const 0
-    local.get 0
-    i64.sub)
-"""
-
 t_op = {p + k: v for p in ('BINARY_', 'INPLACE_') for k, v in {
     'ADD': 'add',
     'SUBTRACT': 'sub',
@@ -33,6 +26,13 @@ t_cmp = {
     '>=': 'ge_s',
 }
 
+header = """(module
+  (func $unary_negative (param i64) (result i64)
+    i64.const 0
+    local.get 0
+    i64.sub)
+"""
+
 def disp_code(code):
     print('----- %s -----' % code.co_name)
     for name in dir(code):
@@ -46,7 +46,7 @@ def disp_op(op):
         '' if op.arg is None else '%4d' % op.arg,
         '' if op.argval is None else '(%s)' % op.argval))
 
-def t_function(f, w_mod, debug=False):
+def t_function(f, w_mod, f_names, debug=False):
     assert inspect.iscode(f)
     if debug:
         disp_code(f)
@@ -62,6 +62,8 @@ def t_function(f, w_mod, debug=False):
     assert nlocals >= 0
     if nlocals:
         w_mod.append('(local %s)' % ' '.join(nlocals * ['i64']))
+
+    f_name = None
 
     for op in dis.get_instructions(f):
         opname = op.opname
@@ -97,6 +99,17 @@ def t_function(f, w_mod, debug=False):
             cmp_op = dis.cmp_op[op.arg]
             w_mod.append('i64.' + t_cmp[cmp_op])
 
+        elif opname == 'LOAD_GLOBAL':
+            name = f.co_names[op.arg]
+            if name in f_names:
+                f_name = name
+            else:
+                return NotImplementedError("%s (%s)" % (opname, name))
+
+        elif opname == 'CALL_FUNCTION':
+            assert f_name is not None
+            w_mod.append('call $%s' % f_name)
+
         elif opname == 'POP_JUMP_IF_FALSE':
             w_mod.append('i64.eqz  br_if 1')
 
@@ -125,7 +138,9 @@ def t_module(source_text, filename='<module>', debug=False):
 
     w_mod = [header]
     for f in functions:
-        t_function(f, w_mod, debug=debug)
+        t_function(f, w_mod,
+                   [g.co_name for g in functions],
+                   debug=debug)
     for f in functions:
         w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
     w_mod.append(')\n')
