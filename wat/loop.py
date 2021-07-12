@@ -1,24 +1,36 @@
 from time import time
 from wasmtime import Store, Module, Instance
 
-N = 1000_000_000
+N = 1000 #1000_000_000
+
 
 
 def sum7(n):
-    return sum(i // 7 for i in range(n + 1))
-
-#def sum7(n):
-#    res = 0
-#    while n:
-#        res += n // 7
-#        n -= 1
-#    return res
+    if n < 1:
+        return 0
+    res = 0
+    while n:
+        res += n // 7
+        n -= 1
+    return res
 
 store = Store()
 module = Module(store.engine, """
 (module
     (func $sum7 (param i64) (result i64)
        (local i64)
+       (block
+           (block
+               local.get 0    ;; n
+               i64.const 1
+               i64.lt_s
+               i32.eqz
+               br_if 1        ;; if n < 1: goto C
+               i64.const 0
+               return
+           )                  ;; label D
+       )                      ;; label C
+
        i64.const 0
        local.set 1            ;; res = 0
        (block
@@ -48,8 +60,8 @@ module = Module(store.engine, """
 instance = Instance(store, module, [])
 
 f = instance.exports(store)["sum7"]
-for n in range(100):
-    assert f(store, n) == sum7(n)
+for n in range(-10, 100):
+    assert f(store, n) == sum7(n), 'n=%d  %r!=%r' % (n, f(store, n), sum7(n))
 
 t0 = time()
 print(f(store, N))
