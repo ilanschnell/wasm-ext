@@ -104,7 +104,7 @@ def t_function(f, w_mod, f_names, debug=False):
             if name in f_names:
                 f_stack.append(name)
             else:
-                return NotImplementedError("%s (%s)" % (opname, name))
+                raise NotImplementedError("%s (%s)" % (opname, name))
 
         elif opname == 'CALL_FUNCTION':
             w_mod.append('call $%s' % f_stack.pop())
