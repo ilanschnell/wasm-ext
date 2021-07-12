@@ -20,7 +20,7 @@ for f in functions:
     trans.t_function(f, w_mod, debug=0)
 for f in functions:
     w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
-w_mod.append(')')
+w_mod.append(') ;; module\n')
 
 with open('u.wat', 'w') as fo:
     fo.write('\n'.join(w_mod))

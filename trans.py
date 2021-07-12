@@ -98,4 +98,4 @@ def t_function(f, w_mod, debug=False):
         if debug:
             disp_op(op)
 
-    w_mod.append(')')  # (func
+    w_mod.append(')  ;; func %s' % f.co_name)
