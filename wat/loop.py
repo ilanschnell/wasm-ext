@@ -25,10 +25,12 @@ module = Module(store.engine, """
                i64.const 1
                i64.lt_s
                i32.eqz
-               br_if 1        ;; if n < 1: goto C
+               br_if 0        ;; if not n < 1: goto C
                i64.const 0
                return
+               br 1
            )                  ;; label D
+           ;; consequence
        )                      ;; label C
 
        i64.const 0
