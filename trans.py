@@ -26,12 +26,12 @@ t_cmp = {
     '>=': 'ge_s',
 }
 
-header = """(module
-  (func $unary_negative (param i64) (result i64)
-    i64.const 0
-    local.get 0
-    i64.sub)
-"""
+header = [
+    '(module',
+    '(func $unary_negative', '(param i64)', '(result i64)',
+    'i64.const 0',
+    'local.get 0',
+    'i64.sub', ')']
 
 def disp_code(code):
     print('----- %s -----' % code.co_name)
@@ -71,9 +71,9 @@ def t_function(f, w_mod, f_names, debug=False):
         if op.is_jump_target:
             assert op.offset in labels
             if op.offset == labels[1]:
-                w_mod.append('(block (loop')
+                w_mod.extend(['(block', '(loop'])
             if op.offset == labels[0]:
-                w_mod.append('))')
+                w_mod.extend([')', ')'])
 
         if opname in t_op:
             w_mod.append('i64.%s' % t_op[opname])
@@ -110,7 +110,7 @@ def t_function(f, w_mod, f_names, debug=False):
             w_mod.append('call $%s' % f_stack.pop())
 
         elif opname == 'POP_JUMP_IF_FALSE':
-            w_mod.append('i64.eqz  br_if 1')
+            w_mod.extend(['i64.eqz', 'br_if 1'])
 
         elif opname == 'JUMP_ABSOLUTE':
             w_mod.append('br 0')
@@ -135,15 +135,23 @@ def t_module(source_text, filename='<module>', debug=False):
 
     functions = [c for c in co.co_consts if inspect.iscode(c)]
 
-    w_mod = [header]
+    w_mod = list(header)
     for f in functions:
         t_function(f, w_mod,
                    [g.co_name for g in functions],
                    debug=debug)
     for f in functions:
         w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
-    w_mod.append(')\n')
-    return '\n'.join(w_mod)
+    w_mod.append(')')
+    out = []
+    indent = 0
+    for x in w_mod:
+        x = x.strip()
+        out.append((indent - x.startswith(')')) * '    ' + x + '\n')
+        indent += x.count('(')
+        indent -= x.count(')')
+    assert indent == 0
+    return ''.join(out)
 
 
 def t_file(py_file, wat_file, debug=False):
