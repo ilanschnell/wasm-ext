@@ -67,6 +67,8 @@ def t_function(f, w_mod, f_names, debug=False):
 
     for op in dis.get_instructions(f):
         opname = op.opname
+        if debug:
+            disp_op(op)
 
         if op.is_jump_target:
             assert op.offset in labels
@@ -121,9 +123,6 @@ def t_function(f, w_mod, f_names, debug=False):
         else:
             raise NotImplementedError(opname)
 
-        if debug:
-            disp_op(op)
-
     w_mod.append(')  ;; func %s' % f.co_name)
 
 
@@ -143,6 +142,8 @@ def t_module(source_text, filename='<module>', debug=False):
     for f in functions:
         w_mod.append('(export "%s" (func $%s))' % (f.co_name, f.co_name))
     w_mod.append(')')
+
+    # indent output
     out = []
     indent = 0
     for x in w_mod:
