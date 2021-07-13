@@ -48,10 +48,10 @@ def disp_op(op):
 
 def t_function(f, w_mod, f_names, debug=False):
     assert inspect.iscode(f)
+    labels = dis.findlabels(f.co_code)
     if debug:
         disp_code(f)
-
-    labels = dis.findlabels(f.co_code)
+        print('labels: %s' % labels)
 
     w_mod.append('(func $%s' % f.co_name)
     if f.co_argcount:
