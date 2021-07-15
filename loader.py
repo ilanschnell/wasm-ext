@@ -47,7 +47,7 @@ class _WasmtimeLoader(Loader):
             name = export.name
             func = instance.exports(store)[name]
             f = lambda *args: func(store, *args)
-            print(name, id(f))
+            #print(name, id(f))
             module.__dict__[name] = f
 
 
