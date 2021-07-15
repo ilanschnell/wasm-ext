@@ -11,6 +11,9 @@ t_file(py_file, wat_file, debug=0)
 import loader
 import u
 
+import demo
+assert u.foo(100) == demo.foo(100)
+
 t0 = time()
 result = u.foo(1000_000_000)
 print('%d    %.3f sec' % (result, time() - t0))
