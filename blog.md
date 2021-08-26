@@ -20,3 +20,10 @@ In the process of studying Web-Assembly, I realized its striking similarity
 to Python Bytecode, as both are executed on a stack machine.  This has lead
 me to write an "opcode transpiler".  So the compiler presented here is really
 just a translater from Python Bytecode to Web-Assembly.
+Of course there are also big differences between Python Bytecode and
+Web-Assembly.  The biggest one being that Python Bytecode is executed on the
+Python virtual machine, which keeps a stack of Python objects, whereas
+Web-Assembly is translated to native machine code and the stack is limited
+to 32 and 64-bit integers and floating point numbers.  Nevertheless, if we
+restrict our Python code to one of these types, we have very similar
+systems.
