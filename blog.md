@@ -27,3 +27,11 @@ Web-Assembly is translated to native machine code and the stack is limited
 to 32 and 64-bit integers and floating point numbers.  Nevertheless, if we
 restrict our Python code to one of these types, we have very similar
 systems.
+
+The module `trans.py` contains an implementation of this "opcode transpiler".
+At its core is a sequence of `if`..`elif` statements, which translate each
+Python opcode into the equivalent Web-Assembly opcode.  The input to this
+transpiler is syntactically Python but restricted to (64-bit) integer variables,
+and only a few opcodes are implemented.  Nevertheless, we can generate
+Web-Assembly for vary simple functions, and compare its execution speed to
+Python (or C).
