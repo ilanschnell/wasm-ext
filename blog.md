@@ -34,4 +34,4 @@ Python opcode into the equivalent Web-Assembly opcode.  The input to this
 transpiler is syntactically Python but restricted to (64-bit) integer variables,
 and only a few opcodes are implemented.  Nevertheless, we can generate
 Web-Assembly for vary simple functions, and compare its execution speed to
-Python (or C).
+Python and C.
