@@ -15,6 +15,8 @@ are:
   * the binary `.wasm` format is very compact (because it was designed to be
     loaded into the browser over the internet)
   * the textual equivalent format `.wat`
+  * there are a several implementations of the runtime, namely `wasmer` and
+    `bytecode-alliance` for many systems, as well as browser support
 
 In the process of studying Web-Assembly, I realized its striking similarity
 to Python Bytecode, as both are executed on a stack machine.  This has lead
