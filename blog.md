@@ -52,7 +52,7 @@ The program `main.py` calls our transpiler, imports the WASM extension and
 measures the execution time.  `demo.c` contains the C implementation of out
 test function.  Here are our test speed results:
 
-| Execution  | Speed in seconds  | Remarks               |
+| Execution  | Time in seconds   | Remarks               |
 | ---------- | ----------------- | --------------------- |
 | Python     | 89.35             | Python 3.9            |
 | WASM       |  0.96             |                       |
