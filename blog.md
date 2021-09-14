@@ -52,12 +52,12 @@ The program `main.py` calls our transpiler, imports the WASM extension and
 measures the execution time.  `demo.c` contains the C implementation of out
 test function.  Here are our test speed results:
 
-| Language  | Speed in seconds  | Remarks               |
-| --------- | ----------------- | --------------------- |
-| Python    | 89.35             | Python 3.9            |
-| WASM      |  0.96             |                       |
-| C         |  3.21             | clang 11.0 with `-O0` |
-| C         |  0.79             | clang 11.0 with `-O3` |
+| Execution  | Speed in seconds  | Remarks               |
+| ---------- | ----------------- | --------------------- |
+| Python     | 89.35             | Python 3.9            |
+| WASM       |  0.96             |                       |
+| C          |  3.21             | clang 11.0 with `-O0` |
+| C          |  0.79             | clang 11.0 with `-O3` |
 
 Interestingly, the WASM execution is faster than the C execution without
 optimization, and only slightly slower than the optimized C code.
