@@ -37,3 +37,27 @@ transpiler is syntactically Python but restricted to (64-bit) integer variables,
 and only a few opcodes are implemented.  Nevertheless, we can generate
 Web-Assembly for vary simple functions, and compare its execution speed to
 Python and C.
+
+Was an example for a speed comparison test, we have chosen the following
+simple function (see `demo.py`, with the parameter `n` one billion):
+
+    def foo(n):
+        res = 0
+        while n:
+            res += n // 7
+            n -= 1
+        return res
+
+The program `main.py` calls our transpiler, imports the WASM extension and
+measures the execution time.  `demo.c` contains the C implementation of out
+test function.  Here are our test speed results:
+
+| Language  | Speed in seconds  | Remarks               |
+| --------- | ----------------- | --------------------- |
+| Python    | 89.35             | Python 3.9            |
+| WASM      |  0.96             |                       |
+| C         |  3.21             | clang 11.0 with `-O0` |
+| C         |  0.79             | clang 11.0 with `-O3` |
+
+Interestingly, the WASM execution is faster than the C execution without
+optimization, and only slightly slower than the optimized C code.
