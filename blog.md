@@ -55,7 +55,7 @@ test function.  Here are our test speed results:
 | Execution  | Time in seconds   | Remarks               |
 | ---------- | ----------------- | --------------------- |
 | Python     | 89.35             | Python 3.9            |
-| WASM       |  0.96             |                       |
+| WASM       |  0.96             | wasmtime 0.28.0       |
 | C          |  3.21             | clang 11.0 with `-O0` |
 | C          |  0.79             | clang 11.0 with `-O3` |
 
