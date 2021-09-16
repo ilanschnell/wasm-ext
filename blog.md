@@ -61,3 +61,6 @@ test function.  Here are our test speed results:
 
 Interestingly, the WASM execution is faster than the C execution without
 optimization, and only slightly slower than the optimized C code.
+While we are able to achieve C speeds, we have to remember that this
+transpiler is extremely simple, and only handles one integer type.
+Extending the transpiler beyond that is a much harder task.
