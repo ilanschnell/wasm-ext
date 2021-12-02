@@ -64,3 +64,7 @@ optimization, and only slightly slower than the optimized C code.
 While we are able to achieve C speeds, we have to remember that this
 transpiler is extremely simple, and only handles one integer type.
 Extending the transpiler beyond that is a much harder task.
+Another approach would be to compile Python to LLVM-IR using numba, and
+then compile the intermediate representation to WASM.  Although this
+involves additional steps, it might be an easier approach as one could
+rely on existing libraries and code.
